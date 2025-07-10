@@ -1,31 +1,29 @@
-// app/components/combined.tsx
-
 "use client"
 
-import * as React from "react"
-import { Payment, Columns } from "./DataTableDemo" // adjust the path to where columns are defined
-import { DataTableDemo } from "./DataTableDemo" // adjust the path
-import {
+import * as React from 'react';
+import { Payment, columns } from './DataTableDemo';
+import { DataTableDemo } from './DataTableDemo';
+import { 
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import {
+ } from './ui/card';
+ import { 
   ChartContainer,
   ChartStyle,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-import { PieChart, Pie, Label, Sector } from "recharts"
-import data from "@/data/data.json"
+ } from './ui/chart';
+ import { PieChart, Pie, Label, Sector } from 'recharts';
+ import data from '@/data/Data.json'
 
-const chartConfig = {
+ const chartConfig = {
   success: {
     label: "Success",
     color: "green",
-  },
+  }, 
   failed: {
     label: "Failed",
     color: "red",
@@ -38,14 +36,13 @@ const chartConfig = {
     label: "Pending",
     color: "orange",
   },
-}
+ }
 
-const id = "pie-interactive"
+ const id = "pie-interactive"
 
-export default function CombinedView() {
+ export default function Combined() {
   const [filteredData, setFilteredData] = React.useState<Payment[]>(data.paymentTableData)
 
-  // Group current data by status for Pie Chart
   const pieData = React.useMemo(() => {
     const grouped: Record<string, number> = {}
 
@@ -61,11 +58,11 @@ export default function CombinedView() {
   }, [filteredData])
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 -2 gap-6">
       <div>
         <DataTableDemo
-          data={data.paymentTableData}
-          onFilteredChange={setFilteredData}
+        data={data.paymentTableData}
+        onFilteredChange={setFilteredData}
         />
       </div>
 
@@ -79,65 +76,58 @@ export default function CombinedView() {
         </CardHeader>
         <CardContent className="flex flex-1 justify-center pb-0">
           <ChartContainer
-            id={id}
-            config={chartConfig}
-            className="mx-auto aspect-square w-full max-w-[300px]"
+          id={id}
+          config={chartConfig}
+          className="mx-auto aspect-square w-full max-w-[300px]"
           >
             <PieChart>
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
+              <ChartTooltip 
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
               />
-              <Pie
-                data={pieData}
-                dataKey="value"
-                nameKey="name"
-                innerRadius={60}
-                strokeWidth={5}
-                activeIndex={-1}
-                activeShape={(props) => {
-                  const { outerRadius = 0 } = props
-                  return (
-                    <g>
-                      <Sector {...props} outerRadius={outerRadius + 10} />
-                      <Sector
-                        {...props}
-                        outerRadius={outerRadius + 25}
-                        innerRadius={outerRadius + 12}
-                      />
-                    </g>
-                  )
-                }}
+              <Pie 
+              data={pieData}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={60}
+              strokeWidth={5}
+              activeIndex={-1}
+              activeShape={(props) => {
+                const { outerRadius = 0 } = props
+                return (
+                  <g>
+                    <Sector {...props} outerRadius={outerRadius + 10} />
+                    <Sector 
+                    {...props}
+                    outerRadius={outerRadius + 25}
+                    innerRadius={outerRadius + 12}
+                    />
+                  </g>
+                )
+              }}
               >
                 <Label
-                  content={({ viewBox }) => {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      const total = pieData.reduce((sum, d) => sum + d.value, 0)
-                      return (
-                        <text
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    const total = pieData.reduce((sum, d) => sum + d.value, 0)
+                    return (
+                      <text 
+                      x={viewBox.cx}
+                      y={viewBox.cy}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      >
+                        <tspan 
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        className="fill-muted-foreground"
                         >
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy}
-                            className="fill-foreground text-3xl font-bold"
-                          >
-                            {total}
-                          </tspan>
-                          <tspan
-                            x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 24}
-                            className="fill-muted-foreground"
-                          >
-                            Payments
-                          </tspan>
-                        </text>
-                      )
-                    }
-                  }}
+                          Payments
+                        </tspan>
+                      </text>
+                    )
+                  }
+                }}
                 />
               </Pie>
             </PieChart>
@@ -146,4 +136,4 @@ export default function CombinedView() {
       </Card>
     </div>
   )
-}
+ }
